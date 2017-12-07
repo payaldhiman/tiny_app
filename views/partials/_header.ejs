@@ -17,5 +17,27 @@
         </ul>
     </div>
 
+
+
+
+
 </div>
 </nav>
+
+
+<% console.log(username);
+if(username){ %>
+       <%= username%>
+        <form method="POST" action="/logout">
+
+        <button type="submit">Log Out</button>
+
+
+    </form>
+
+<% } else{ %>
+   <form method="POST" action="/login">
+   <input type="text" name="username" value="username">
+   <button type="submit">Submit</button>
+
+<% } %>
