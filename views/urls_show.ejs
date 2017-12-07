@@ -8,7 +8,15 @@
   <header>
 
   </header>
-  <%= shortURL %> - <%= longURL %>
+
+  <h1>ShortURL: <%= shortURL %></h1>
+
+  <form method="POST" action="/urls/<%= shortURL %>">
+    <input type="" name="lURL" value="<%= longURL %>">
+    <button>Update</button>
+  </form>
+
+
 
 </body>
 </html>
