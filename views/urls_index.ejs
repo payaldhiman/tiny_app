@@ -9,9 +9,12 @@
     <% include ../views/partials/_header %>
   </header>
   <ul>
-    <% for(var url in urls) { %>
-    <li>
-        <%= url %> &rarr; <%= urls[url] %>
+
+    <% for(var url in urls) {  %>
+    <% console.log("url",url) %>
+
+        <li>
+        <%= url %> &rarr; <%= urls[url]['longURL'] %>
       <form method="POST" style="display:inline" action=<%="/urls/" + url +"/delete"%> >
         <a href="<%="urls/"+ url +"/update" %>"> Edit </a>
         <button> Delete </button>

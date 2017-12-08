@@ -12,7 +12,7 @@
   <h1>ShortURL: <%= shortURL %></h1>
 
   <form method="POST" action="/urls/<%= shortURL %>">
-    <input type="" name="lURL" value="<%= longURL %>">
+    <input type="" name="lURL" value="<%= shortURL[longURL] %>">
     <button>Update</button>
   </form>
 
