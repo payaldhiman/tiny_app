@@ -12,6 +12,9 @@
 
     <% for(var url in urls) {  %>
     <% console.log("url",url) %>
+    <% console.log(user) %>
+    <% if(user === urls[url].userID) {%>
+
 
         <li>
         <%= url %> &rarr; <%= urls[url]['longURL'] %>
@@ -19,6 +22,7 @@
         <a href="<%="urls/"+ url +"/update" %>"> Edit </a>
         <button> Delete </button>
       </form></li>
+      <% } %>
 
 
     <% } %>

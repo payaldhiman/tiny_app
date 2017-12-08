@@ -49,9 +49,12 @@ app.get("/about", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  var url_objs = urlsForUser(req.cookies.user_ID);
+
   console.log("3");
   console.log("cookies ",req.cookies);
-  let templateVars = { urls: urlDatabase, user: req.cookies};
+  let templateVars = { urls: urlDatabase, user: req.cookies.user_ID, url_objs: url_objs };
+  console.log("urls of curren user",url_objs);
   res.render("urls_index", templateVars);
 });
 
@@ -82,11 +85,18 @@ app.get("/urls/:id/update", (req, res) => {
   var shortURL = req.params.id;
 
   console.log('short', req.params);
-  var longURL = urlDatabase[shortURL][longURL];
-  urlDatabase[shortURL]['longURL'] = req.body.longURL;
-  let templateVars = { shortURL: shortURL, longURL:longURL, user: req.cookies };
+  var longURL = urlDatabase[shortURL].longURL;
+  let templateVars = { shortURL: shortURL, longURL:longURL, user: req.cookies.user_ID };
   console.log(templateVars);
-  res.render("urls_show", templateVars);
+  console.log(urlDatabase[shortURL].userID);
+  if(templateVars.user === urlDatabase[shortURL].userID) {
+    urlDatabase[shortURL]['longURL'] = req.body.longURL;
+    console.log("about to show res render");
+    res.render("urls_show", templateVars);
+    return;
+  }
+  console.log("about to redirect");
+  res.redirect("/urls");
 });
 
 //updating URLs
@@ -110,7 +120,7 @@ app.post("/urls", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   console.log("9");
   var shortURL = req.params.id;
-  var longURL = urlDatabase[shortURL][longURL];
+  //var longURL = urlsForUser(shortURL).longURL;
   let templateVars = { shortURL: shortURL, longURL:longURL, user: users[req.cookies.user_id] };
   res.render("urls_show", templateVars);
 });
@@ -118,11 +128,6 @@ app.get("/urls/:id", (req, res) => {
 app.get("/urls.json", (req, res) => {
   console.log("10");
   res.json(urlDatabase);
-});
-
-app.get("/hello", (req, res) => {
-  console.log("11");
-  res.end("<html><body>Hello <b>World</b></body></html>\n");
 });
 
 app.get("/u/:shortURL", (req, res) => {
@@ -224,4 +229,18 @@ app.listen(PORT, () => {
 
 function generateRandomString() {
   return Math.floor((1 + Math.random()) * 0x1000000).toString(16).substring(1);
+}
+
+function urlsForUser(id) {
+  var userUrls = [];
+  for(var i in urlDatabase) {
+    if(id === urlDatabase[i].userID) {
+      userUrls.push(urlDatabase[i]);
+    }
+  }
+//looop through url database
+// if the 'id' === the database userid
+// add that url to the new object use urls
+
+  return userUrls;
 }

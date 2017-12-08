@@ -1,13 +1,9 @@
 <!-- views/partials/header.ejs -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
 
-</head>
-<body style="font-size:20px; padding:50px;">
   <h1>Tiny App</h1>
-  <% console.log("here",user.user_ID)%>
- <% if (!user.user_ID) { %>
+  <% console.log("here",user)%>
+  <% console.log() %>
+ <% if (!user) { %>
   <a href="/login">Login</a>
   <a href="/register">Register</a>
 <% } else  {%>
@@ -15,6 +11,5 @@
     <input type="submit" value="LogOut">
   </form>
  <% } %>
-</body>
-</html>
+
 
