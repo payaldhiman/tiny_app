@@ -1,0 +1,20 @@
+<!-- registration form -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+</head>
+<body style="font-size:20px; padding:50px;">
+  <header>
+    <% include ../views/partials/_header %>
+  </header>
+  <form method="POST" action="/register">
+    <h2>Register</h2>
+
+    <input type="email" name="email" placeholder="user@email.com" value="">
+    <input type="password" name="password" placeholder="password" value="">
+    <input type="submit" value="Register">
+
+  </form>
+</body>
+</html>

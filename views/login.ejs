@@ -1,0 +1,17 @@
+<!-- login form -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+</head>
+<body style="font-size:20px; padding:50px;">
+  <% include ../views/partials/_header %>
+  <h1>Log In</h1>
+    <form method="POST" action="/login">
+    <input type="email" name="email" placeholder="user@email.com" value="">
+    <input type="password" name="password" placeholder="password" value="">
+    <button type="submit">Log In</button>
+    </form>
+
+</body>
+</html>
