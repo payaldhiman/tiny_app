@@ -2,8 +2,10 @@
 
   <h1>Tiny App</h1>
   <% console.log("here",user)%>
-  <% console.log() %>
- <% if (!user) { %>
+
+ <% if (user === undefined) { %>
+
+
   <a href="/login">Login</a>
   <a href="/register">Register</a>
 <% } else  {%>
