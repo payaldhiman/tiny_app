@@ -1,17 +1,15 @@
 <!-- views/partials/header.ejs -->
 
-  <h1>Tiny App</h1>
-  <% console.log("here",user)%>
-
- <% if (user === undefined) { %>
-
-
+<h1>Tiny App</h1>
+<% if (!user) { %>
   <a href="/login">Login</a>
   <a href="/register">Register</a>
 <% } else  {%>
   <form method="POST" action="/logout">
+    <%= display_name %>
     <input type="submit" value="LogOut">
   </form>
- <% } %>
+  <a href="/urls/new">Add URL</a>
+<% } %>
 
 

@@ -11,18 +11,20 @@
   <ul>
 
     <% for(var url in urls) {  %>
-    <% console.log("url",url) %>
-    <% console.log(user) %>
-    <% if(user === urls[url].userID) {%>
 
 
-        <li>
+
+
+
+          <% if(user === urls[url]['userID']) { %>
+          <li>
         <%= url %> &rarr; <%= urls[url]['longURL'] %>
-      <form method="POST" style="display:inline" action=<%="/urls/" + url +"/delete"%> >
+        <form method="POST" style="display:inline" action=<%="/urls/" + url +"/delete"%> >
         <a href="<%="urls/"+ url +"/update" %>"> Edit </a>
         <button> Delete </button>
-      </form></li>
-      <% } %>
+        </form> </li> <% } %>
+
+
 
 
     <% } %>
