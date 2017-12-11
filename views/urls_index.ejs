@@ -4,30 +4,19 @@
   <title>TinyApp</title>
 </head>
 <body>
-
-  <header>
-    <% include ../views/partials/_header %>
-  </header>
-  <ul>
-
-    <% for(var url in urls) {  %>
-
-
-
-
-
-          <% if(user === urls[url]['userID']) { %>
-          <li>
-        <%= url %> &rarr; <%= urls[url]['longURL'] %>
-        <form method="POST" style="display:inline" action=<%="/urls/" + url +"/delete"%> >
-        <a href="<%="urls/"+ url +"/update" %>"> Edit </a>
-        <button> Delete </button>
-        </form> </li> <% } %>
-
-
-
-
-    <% } %>
-  </ul>
+<header>
+  <% include ../views/partials/_header %>
+</header>
+<ul>
+  <% for(var url in urls) {  %>
+  <% if(user === urls[url]['userID']) { %>
+  <li>
+  <%= url %> &rarr; <%= urls[url]['longURL'] %>
+  <a href="<%="urls/"+ url %>"> Edit </a>
+  <form method="POST" style="display:inline" action=<%="/urls/" + url +"/delete"%> >
+  <input type="submit" value="Delete">
+  </form> </li> <% } %>
+  <% } %>
+</ul>
 </body>
 </html>

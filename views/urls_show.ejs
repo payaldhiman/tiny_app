@@ -7,10 +7,13 @@
   <header>
     <% include ../views/partials/_header %>
   </header>
+  <% for(var url in urls) {  %>
+  <% if(user === urls[url]['userID']) { %>
   <h1>ShortURL: <%= shortURL %></h1>
   <form method="POST" action="/urls/<%= shortURL %>">
     <input type="" name="lURL" placeholder="http://" value="<%= shortURL[longURL] %>">
-    <button>Update</button>
+    <input type="submit" value="Update">
   </form>
+  <% } %> <% } %>
 </body>
 </html>
