@@ -46,7 +46,7 @@ const users = {
 }
 
 
-// "/" get
+// "/" get --fixed
 app.get("/", (req, res) => {
   const cookiename = req.session.user_id;
   if (cookiename) {
@@ -59,7 +59,7 @@ app.get("/", (req, res) => {
 
 });
 
-// home page
+// home page --fixed
 app.get("/urls", (req, res) => {
   //if the user logged in or not
   const cookiename = req.session.user_id;
@@ -75,7 +75,7 @@ app.get("/urls", (req, res) => {
   }
 });
 
-//get login page
+//get login page --fixed
 app.get("/login", (req, res) => {
   const cookiename = req.session.user_id;
   if (cookiename) { //user is logged in
@@ -88,7 +88,7 @@ app.get("/login", (req, res) => {
   }
 });
 
-//registration page
+//registration page --fixed
 app.get("/register", (req, res) => {
   const cookiename = req.session.user_id;
   if (cookiename) { //user is logged in
@@ -101,62 +101,72 @@ app.get("/register", (req, res) => {
   }
 });
 
-//set cookie and login
+function getUserByEmail(email) {
+  for (var uid in users) {
+    if(users[uid].email === email) {
+      return users[uid];
+    }
+  }
+  return null;
+}
+
+//set cookie and login  --fixed
 app.post("/login", (req, res) => {
   if (req.body.email === '' && req.body.password === '') {
     res.status(403);
     res.send("email and password are required fields");
   }
-  let us = false;
-  let user;
-  for (var i in users) {
-    if (users[i].email == req.body.email) {
-      us = true;
-      user = users[i];
-    }
+
+  const user = getUserByEmail(req.body.email);
+
+  if (user === null) {
+    res.status(403).send("email does not exists, please register first");
   }
-  if (us == false){
-    res.status(403).send("email and password does not match");
-    return;
-  }
-  if (bcrypt.hashSync(req.body.password, user.password)) {
+
+  if (bcrypt.compareSync(req.body.password, user.password)) {
     req.session.user_id = user.id;
     res.redirect("/urls");
-  }
-  else {
-    return ;
+  } else {
+    res.status(403).send("email and password does not match");
   }
 });
 
-//register new user and set cookie
-app.post("/register", (req, res) => {
-  var userID = generateRandomString();
-  if (req.body.email === '' && req.body.password === '') {
-    res.status(400);
-    res.send("email and password are required fields");
-  }
+function checkemail(email) {
   for (var i in users) {
-    if (users[i].email === req.body.email) {
-      res.status(400);
-      res.send("email already exists, please login.");
+    if (users[i].email === email) {
+      return true;
     }
   }
+  return false;
+}
+
+//register new user and set cookie --fixed
+app.post("/register", (req, res) => {
+  let userID = generateRandomString();
+  if (req.body.email === '' && req.body.password === '') {
+    res.status(400).send("email and password are required fields");
+  }
+  if (checkemail(req.body.email)) {
+    res.status(400).send("email already exists");
+  }
+
   users[userID] = {
     id: userID,
     email: req.body.email,
-    password: bcrypt.hashSync(req.body.password,10)
+    password: bcrypt.hashSync(req.body.password, 10)
   };
+
   req.session.user_id = userID;
   res.redirect('/urls');
 });
 
-//using cookie for logout
+//using cookie for logout --fixed
 app.post("/logout", (req, res) => {
   req.session = null;
   res.redirect('/');
 });
 
-//sending to create url to new url page
+//sending to create url to new url page --fixed
 app.get("/urls/new", (req, res) => {
   const cookiename = req.session.user_id;
   if (cookiename) { //user is logged in
@@ -170,7 +180,7 @@ app.get("/urls/new", (req, res) => {
   }
 });
 
-//create new url
+//create new url --fixed
 app.post("/urls", (req, res) => {
   const cookiename = req.session.user_id;
   if (cookiename) {
@@ -219,20 +229,37 @@ app.get("/urls/:id/delete", (req, res) => {
   res.render("/urls");
 })
 
-//an edit button which makes a GET request to /urls/:id
+function urlsForUser(id) {
+  var usersUrl = {};
+  for (var url in urlDatabase) {
+    if (urlDatabase[url].userID === id) {
+      usersUrl[url] = urlDatabase[url].longURL;
+    }
+  }
+  return usersUrl;
+}
+//edit button which makes a GET request to /urls/:id
 app.get("/urls/:id", (req, res) => {
   const cookiename = req.session.user_id;
-  if (cookiename) { //user is logged in
+
+  if(cookiename) {
+    const user = users[cookiename];
+    if (!urlDatabase[req.params.id]) {
+      res.status(400).send("Short Url does not exists");
+      return;
+    }
+
     let templateVars = {
-      urls: urlDatabase,
-      longURL: urlDatabase[req.params.id]['longURL'],
-      shortURL: req.params.id,
-      user: req.session.user_id,
-      display_name: users[req.session.user_id].email
-    };
-    res.render("urls_show", templateVars);
-  } else { //user is not logged in
-    res.send("ERROR: User needs to Login or Register.");
+    urls: urlsForUser(req.session.user_id),
+    longURL: urlDatabase[req.params.id]['longURL'],
+    shortURL: req.params.id,
+    user: req.session.user_id,
+    display_name: users[req.session.user_id].email
+  };
+
+  res.render("urls_show", templateVars);
+  } else {
+    return response.send("<a href='/login'>You're not logged in at the moment! Follow the link, log in and try again</a>");
   }
 });
 
@@ -286,14 +313,3 @@ function generateRandomString() {
   return Math.floor((1 + Math.random()) * 0x1000000).toString(16).substring(1);
 }
 
-function urlsForUser(c) {
-  let usersUrl = {};
-  for (var uid in urlDatabase) {
-    console.log(urlDatabase[uid].userID);
-    if (urlDatabase[uid].userID === c) {
-      usersUrl += urlDatabase[uid];
-      console.log(usersUrl);
-    }
-  }
-  return null;
-}

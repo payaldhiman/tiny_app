@@ -12,7 +12,7 @@
   <% if(user === urls[url]['userID']) { %>
   <li>
   <%= url %> &rarr; <%= urls[url]['longURL'] %>
-  <a href="<%="urls/"+ url %>"> Edit </a>
+  <a href="/urls/<%=url%>"> Edit </a>
   <form method="POST" style="display:inline" action=<%="/urls/" + url +"/delete"%> >
   <input type="submit" value="Delete">
   </form> </li>
