@@ -45,12 +45,11 @@ const users = {
   }
 }
 
-// ******* Middleware functions *********** //
 
 // "/" get
 app.get("/", (req, res) => {
   const cookiename = req.session.user_id;
-  if(cookiename) {
+  if (cookiename) {
     //user is logged in
     res.redirect("/urls");
   } else {
@@ -63,13 +62,15 @@ app.get("/", (req, res) => {
 // home page
 app.get("/urls", (req, res) => {
   //if the user logged in or not
-  console.log("1");
   const cookiename = req.session.user_id;
-  if(cookiename){ //user is logged in
-    let templateVars = { urls: urlDatabase, user: req.session.user_id, display_name: users[req.session.user_id].email};
-    console.log(templateVars);
+  if (cookiename) { //user is logged in
+    let templateVars = {
+      urls: urlDatabase,
+      user: req.session.user_id,
+      display_name: users[req.session.user_id].email
+    };
     res.render("urls_index", templateVars);
-  } else {
+  } else { //user is not logged in
     res.send("ERROR: User needs to Login or Register.");
   }
 });
@@ -77,44 +78,48 @@ app.get("/urls", (req, res) => {
 //get login page
 app.get("/login", (req, res) => {
   const cookiename = req.session.user_id;
-  if(cookiename){ //user is logged in
+  if (cookiename) { //user is logged in
     res.redirect("/urls");
   } else {
-    let templateVars = {user: req.session };
-    res.render("login",templateVars);
+    let templateVars = {
+      user: req.session.user_id
+    };
+    res.render("login", templateVars);
   }
 });
 
 //registration page
 app.get("/register", (req, res) => {
   const cookiename = req.session.user_id;
-  if(cookiename){ //user is logged in
+  if (cookiename) { //user is logged in
     res.redirect("/urls");
-  } else {
-    let templateVars = { urls: urlDatabase, user: req.session};
+  } else { //user is not logged in
+    let templateVars = {
+      user: req.session.user_id
+    };
     res.render("register", templateVars);
   }
 });
 
 //set cookie and login
 app.post("/login", (req, res) => {
-  if(req.body.email === '' && req.body.password === '') {
+  if (req.body.email === '' && req.body.password === '') {
     res.status(403);
     res.send("email and password are required fields");
   }
   let us = false;
   let user;
-  for(var i in users) {
-     if (users[i].email == req.body.email) {
+  for (var i in users) {
+    if (users[i].email == req.body.email) {
       us = true;
       user = users[i];
-     }
+    }
   }
   if (us == false){
     res.status(403).send("email and password does not match");
     return;
   }
-  if(bcrypt.hashSync(req.body.password, user.password)) {
+  if (bcrypt.hashSync(req.body.password, user.password)) {
     req.session.user_id = user.id;
     res.redirect("/urls");
   }
@@ -126,12 +131,12 @@ app.post("/login", (req, res) => {
 //register new user and set cookie
 app.post("/register", (req, res) => {
   var userID = generateRandomString();
-  if(req.body.email === '' && req.body.password === '') {
+  if (req.body.email === '' && req.body.password === '') {
     res.status(400);
     res.send("email and password are required fields");
   }
-  for(var i in users) {
-    if(users[i].email === req.body.email) {
+  for (var i in users) {
+    if (users[i].email === req.body.email) {
       res.status(400);
       res.send("email already exists, please login.");
     }
@@ -148,14 +153,17 @@ app.post("/register", (req, res) => {
 //using cookie for logout
 app.post("/logout", (req, res) => {
   req.session = null;
-  res.redirect('/urls');
+  res.redirect('/');
 });
 
 //sending to create url to new url page
 app.get("/urls/new", (req, res) => {
   const cookiename = req.session.user_id;
-  if(cookiename) { //user is logged in
-    let templateVars = {user: req.session.user_id, display_name: users[req.session.user_id].email};
+  if (cookiename) { //user is logged in
+    let templateVars = {
+      user: req.session.user_id,
+      display_name: users[req.session.user_id].email
+    };
     res.render('urls_new',templateVars);
   } else { //user is not logged in
     res.redirect("/login");
@@ -165,8 +173,8 @@ app.get("/urls/new", (req, res) => {
 //create new url
 app.post("/urls", (req, res) => {
   const cookiename = req.session.user_id;
-  if(cookiename) {
-    if(req.body.longURL === "") {
+  if (cookiename) {
+    if (req.body.longURL === "") {
       res.status(400);
       res.send("enter URL or go back to homepage.");
     }
@@ -175,9 +183,13 @@ app.post("/urls", (req, res) => {
       shortURL: newShortURL,
       longURL: req.body.longURL,
       userID: req.session.user_id
-    }
+    };
     urlDatabase[newShortURL] = newObject;
-    let templateVars = { urls: urlDatabase, user: req.session.user_id, display_name: users[req.session.user_id].email};
+    let templateVars = {
+      urls: urlDatabase,
+      user: req.session.user_id,
+      display_name: users[req.session.user_id].email
+    };
     res.render("urls_index", templateVars);
   } else {
     res.send("ERROR: User needs to Login or Register.");
@@ -187,7 +199,7 @@ app.post("/urls", (req, res) => {
 //updating URLs
 app.post("/urls/:id", (req, res) => {
   const cookiename = req.session.user_id;
-  if(cookiename) {
+  if (cookiename) {
     urlDatabase[req.params.id]['longURL'] = req.body.lURL;
     res.redirect("/urls");
   } else {
@@ -197,9 +209,7 @@ app.post("/urls/:id", (req, res) => {
 
 //deleting URLs
 app.post("/urls/:id/delete", (req, res) => {
-  console.log("4");
   var shortURL = req.params.id;
-  console.log(shortURL);
   delete urlDatabase[shortURL];
   res.redirect("/urls");
 });
@@ -212,11 +222,17 @@ app.get("/urls/:id/delete", (req, res) => {
 //an edit button which makes a GET request to /urls/:id
 app.get("/urls/:id", (req, res) => {
   const cookiename = req.session.user_id;
-  if(cookiename) { //user is logged in
-    let templateVars = { urls: urlDatabase, longURL: urlDatabase[req.params.id]['longURL'], shortURL: req.params.id, user: req.session.user_id, display_name: users[req.session.user_id].email };
+  if (cookiename) { //user is logged in
+    let templateVars = {
+      urls: urlDatabase,
+      longURL: urlDatabase[req.params.id]['longURL'],
+      shortURL: req.params.id,
+      user: req.session.user_id,
+      display_name: users[req.session.user_id].email
+    };
     res.render("urls_show", templateVars);
   } else { //user is not logged in
-    res.send("ERROR: User needs to Login or Register. Go to ");
+    res.send("ERROR: User needs to Login or Register.");
   }
 });
 
@@ -229,7 +245,11 @@ app.get("/urls/:id/update", (req, res) => {
     var longURL = urlDatabase[shortURL].longURL;
     if(cookiename === urlDatabase[shortURL].userID) { //the url belong to the user
       urlDatabase[shortURL]['longURL'] = req.body.longURL;
-      let templateVars = { shortURL: shortURL, longURL:longURL, user: req.session.user_id, display_name: users[req.session.user_id].email};
+      let templateVars = {
+        shortURL: shortURL,
+        longURL:longURL, user: req.session.user_id,
+        display_name: users[req.session.user_id].email
+      };
       res.render("urls_show", templateVars);
     } else {
       res.send("The url does not belong to you. You can't edit");
@@ -239,22 +259,21 @@ app.get("/urls/:id/update", (req, res) => {
   }
 });
 
+//goes to longUrl
 app.get("/u/:shortURL", (req, res) => {
   const cookiename = req.session.user_id;
-  for(var url in urlDatabase) {
-    if(urlDatabase[url].userID === cookiename) {
+  for (var url in urlDatabase) {
+    if (urlDatabase[url].userID === cookiename) {
       var shortURL = req.params.shortURL;
       let longURL = urlDatabase[shortURL].longURL;
-      console.log(longURL);
       res.redirect(longURL);
     } else {
-      res.send("");
+      res.send("longUrl for given shortUrl does not exist.");
     }
   }
 });
 
 app.get("/urls.json", (req, res) => {
-  console.log("9");
   res.json(urlDatabase);
 });
 
