@@ -8,5 +8,24 @@
     "cookie-session": "^2.0.0-beta.3",
     "ejs": "^2.5.5",
     "express": "^4.16.2"
-  }
+  },
+  "description": "TinyApp is a full stack web application built with Node and Express that allows users to shorten long URLs",
+  "version": "1.0.0",
+  "directories": {
+    "doc": "docs"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/payaldhiman/tiny_app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/payaldhiman/tiny_app/issues"
+  },
+  "homepage": "https://github.com/payaldhiman/tiny_app#readme"
 }
