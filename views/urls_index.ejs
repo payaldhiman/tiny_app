@@ -11,7 +11,7 @@
   <% for(var url in urls) {  %>
   <% if(user === urls[url]['userID']) { %>
   <li>
-  <a href="/u/<%=url%>"><%=url%></a> &rarr; <%= urls[url]['longURL'] %>
+  <a href="/u/<%=url%>">http://localhost:8080/u/<%=url%></a> &rarr; <%= urls[url]['longURL'] %>
   <a href="/urls/<%=url%>"> Edit </a>
   <form method="POST" style="display:inline" action=<%="/urls/" + url +"/delete"%> >
   <input type="submit" value="Delete">

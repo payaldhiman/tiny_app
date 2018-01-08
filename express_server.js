@@ -288,16 +288,13 @@ app.get("/urls/:id/update", (req, res) => {
 
 //goes to longUrl
 app.get("/u/:shortURL", (req, res) => {
-  const cookiename = req.session.user_id;
-  for (var url in urlDatabase) {
-    if (urlDatabase[url].userID === cookiename) {
-      var shortURL = req.params.shortURL;
-      let longURL = urlDatabase[shortURL].longURL;
-      res.redirect(longURL);
-    } else {
-      res.send("longUrl for given shortUrl does not exist.");
-    }
+  if (req.params.shortURL in urlDatabase) {
+    const longURL = urlDatabase[req.params.shortURL].longURL;
+    res.redirect(longURL);
+  } else {
+    res.status(404).send("longUrl for given shortUrl does not exist.");
   }
+
 });
 
 app.get("/urls.json", (req, res) => {
